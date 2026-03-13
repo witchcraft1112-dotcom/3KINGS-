@@ -1,0 +1,2093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>3 Kings Enterprise Holdings — Executive Command Center</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+<style>
+  :root {
+    --gold: #FFD700;
+    --gold-dark: #B8860B;
+    --gold-light: #FFF3B0;
+    --green: #00A651;
+    --green-dark: #007A3D;
+    --green-light: #00FF7F;
+    --red: #FF4444;
+    --black: #050810;
+    --dark1: #0A0F1E;
+    --dark2: #111827;
+    --dark3: #1C2333;
+    --dark4: #242D40;
+    --text: #F0F4FF;
+    --text-dim: #8892A4;
+    --border: rgba(255,215,0,0.15);
+    --glow-gold: 0 0 20px rgba(255,215,0,0.3);
+    --glow-green: 0 0 20px rgba(0,166,81,0.3);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--black);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ANIMATED BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: 
+      radial-gradient(ellipse at 20% 20%, rgba(255,215,0,0.04) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(0,166,81,0.04) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(0,10,30,0.8) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* KENTE PATTERN OVERLAY */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: 
+      repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,215,0,0.015) 40px, rgba(255,215,0,0.015) 41px),
+      repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,215,0,0.015) 40px, rgba(255,215,0,0.015) 41px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 260px;
+    background: linear-gradient(180deg, #0A0F1E 0%, #050810 100%);
+    border-right: 1px solid var(--border);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .logo-area {
+    padding: 24px 20px;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+  }
+
+  .crown-icon {
+    font-size: 42px;
+    display: block;
+    margin-bottom: 8px;
+    filter: drop-shadow(0 0 10px rgba(255,215,0,0.6));
+    animation: pulse-crown 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-crown {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(255,215,0,0.6)); }
+    50% { transform: scale(1.05); filter: drop-shadow(0 0 20px rgba(255,215,0,0.9)); }
+  }
+
+  .logo-title {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 1.5px;
+    line-height: 1.4;
+  }
+
+  .logo-sub {
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    margin-top: 4px;
+    text-transform: uppercase;
+  }
+
+  .nav-section {
+    padding: 16px 0;
+  }
+
+  .nav-label {
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 0 20px 8px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  .nav-item:hover, .nav-item.active {
+    background: rgba(255,215,0,0.05);
+    border-left-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .nav-item i { width: 18px; text-align: center; font-size: 14px; }
+
+  .nav-badge {
+    margin-left: auto;
+    background: var(--gold);
+    color: var(--black);
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+  }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  .ceo-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .ceo-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-weight: 900;
+    color: var(--black);
+    font-size: 14px;
+    box-shadow: var(--glow-gold);
+    flex-shrink: 0;
+  }
+
+  .ceo-info { flex: 1; overflow: hidden; }
+  .ceo-name { font-size: 11px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ceo-title { font-size: 9px; color: var(--gold); letter-spacing: 1px; }
+
+  /* MAIN CONTENT */
+  .main {
+    margin-left: 260px;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* TOP BAR */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px;
+    background: rgba(10,15,30,0.8);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .topbar-left h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 1px;
+  }
+
+  .topbar-left p {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,166,81,0.1);
+    border: 1px solid rgba(0,166,81,0.3);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 11px;
+    color: var(--green-light);
+  }
+
+  .live-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green-light);
+    animation: blink 1.2s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+
+  .topbar-btn {
+    background: rgba(255,215,0,0.08);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .topbar-btn:hover { background: rgba(255,215,0,0.15); color: var(--gold); }
+
+  /* PAGE SECTIONS */
+  .page { display: none; padding: 32px; }
+  .page.active { display: block; }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-family: 'Cinzel', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+
+  .section-sub {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 28px;
+  }
+
+  /* STAT CARDS ROW */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .stat-card {
+    background: linear-gradient(135deg, var(--dark2) 0%, var(--dark3) 100%);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--glow-gold);
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 80px; height: 80px;
+    border-radius: 0 16px 0 80px;
+    opacity: 0.08;
+  }
+
+  .stat-card.gold::before { background: var(--gold); }
+  .stat-card.green::before { background: var(--green); }
+  .stat-card.blue::before { background: #4A90D9; }
+  .stat-card.purple::before { background: #9B59B6; }
+
+  .stat-icon {
+    font-size: 22px;
+    margin-bottom: 14px;
+  }
+
+  .stat-card.gold .stat-icon { color: var(--gold); }
+  .stat-card.green .stat-icon { color: var(--green-light); }
+  .stat-card.blue .stat-icon { color: #4A90D9; }
+  .stat-card.purple .stat-icon { color: #C39BD3; }
+
+  .stat-value {
+    font-family: 'Cinzel', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .stat-change {
+    font-size: 11px;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .stat-change.up { color: var(--green-light); }
+  .stat-change.down { color: var(--red); }
+
+  /* GRID LAYOUTS */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  .grid-7-3 { display: grid; grid-template-columns: 1.7fr 1fr; gap: 20px; margin-bottom: 20px; }
+
+  /* PANEL */
+  .panel {
+    background: linear-gradient(135deg, var(--dark2) 0%, var(--dark3) 100%);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .panel-title {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .panel-sub {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 20px;
+  }
+
+  /* COMPANY CARDS */
+  .company-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .company-card {
+    background: linear-gradient(135deg, var(--dark2), var(--dark3));
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .company-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--gold);
+    box-shadow: var(--glow-gold);
+  }
+
+  .company-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .company-card.active-co::after { background: var(--green); }
+  .company-card.development-co::after { background: #4A90D9; }
+  .company-card.planning-co::after { background: var(--gold); }
+
+  .co-icon { font-size: 28px; margin-bottom: 12px; }
+  .co-name { font-family: 'Cinzel', serif; font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 6px; line-height: 1.3; }
+  .co-type { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+
+  .co-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .co-status.active { background: rgba(0,255,127,0.1); color: var(--green-light); border: 1px solid rgba(0,255,127,0.2); }
+  .co-status.planning { background: rgba(255,215,0,0.1); color: var(--gold); border: 1px solid rgba(255,215,0,0.2); }
+  .co-status.development { background: rgba(74,144,217,0.1); color: #4A90D9; border: 1px solid rgba(74,144,217,0.2); }
+
+  /* PROJECT ROWS */
+  .project-list { display: flex; flex-direction: column; gap: 14px; }
+
+  .project-row {
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.2s;
+  }
+
+  .project-row:hover {
+    border-color: rgba(255,215,0,0.3);
+    background: var(--dark4);
+  }
+
+  .project-icon { font-size: 20px; width: 40px; height: 40px; background: rgba(255,215,0,0.08); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .project-info { flex: 1; }
+  .project-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .project-meta { font-size: 11px; color: var(--text-dim); }
+  .project-progress { width: 140px; }
+  .progress-bar-bg { background: var(--dark1); border-radius: 4px; height: 6px; margin-bottom: 4px; }
+  .progress-bar-fill { height: 6px; border-radius: 4px; background: linear-gradient(90deg, var(--green), var(--gold)); }
+  .progress-label { font-size: 10px; color: var(--text-dim); text-align: right; }
+  .project-budget { text-align: right; min-width: 100px; }
+  .budget-val { font-size: 13px; font-weight: 600; color: var(--gold); }
+  .budget-label { font-size: 10px; color: var(--text-dim); }
+
+  /* EMPLOYEE TABLE */
+  .emp-table { width: 100%; border-collapse: collapse; }
+  .emp-table th { text-align: left; font-size: 10px; color: var(--text-dim); letter-spacing: 1.5px; text-transform: uppercase; padding: 0 16px 12px; border-bottom: 1px solid var(--border); }
+  .emp-table td { padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 12px; vertical-align: middle; }
+  .emp-table tr:last-child td { border-bottom: none; }
+  .emp-table tr:hover td { background: rgba(255,215,0,0.03); }
+
+  .emp-avatar {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: var(--black);
+    margin-right: 10px;
+  }
+
+  .emp-name-cell { display: flex; align-items: center; }
+  .emp-name { font-weight: 600; color: var(--text); }
+  .emp-email { font-size: 10px; color: var(--text-dim); }
+
+  .level-badge {
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    color: var(--black);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  .skill-bar { display: flex; align-items: center; gap: 8px; }
+  .skill-fill { height: 4px; background: linear-gradient(90deg, var(--green), var(--gold)); border-radius: 2px; }
+  .skill-bg { flex: 1; height: 4px; background: var(--dark1); border-radius: 2px; overflow: hidden; }
+
+  /* BANKING */
+  .bank-card {
+    background: linear-gradient(135deg, #1a1000, #0a1500);
+    border: 1px solid rgba(255,215,0,0.3);
+    border-radius: 20px;
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bank-card::before {
+    content: '';
+    position: absolute;
+    top: -50%; right: -20%;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,215,0,0.08), transparent);
+  }
+
+  .bank-card-type { font-size: 10px; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 20px; }
+  .bank-card-balance { font-family: 'Cinzel', serif; font-size: 32px; color: var(--text); margin-bottom: 8px; }
+  .bank-card-label { font-size: 11px; color: var(--text-dim); margin-bottom: 24px; }
+  .bank-card-details { display: flex; justify-content: space-between; align-items: flex-end; }
+  .bank-card-holder { font-size: 13px; font-weight: 600; color: var(--gold); }
+  .bank-card-logo { font-size: 28px; }
+
+  /* TRANSACTION LIST */
+  .txn-list { display: flex; flex-direction: column; gap: 0; }
+  .txn-row { display: flex; align-items: center; gap: 14px; padding: 13px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .txn-row:last-child { border-bottom: none; }
+  .txn-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+  .txn-icon.in { background: rgba(0,255,127,0.1); color: var(--green-light); }
+  .txn-icon.out { background: rgba(255,68,68,0.1); color: var(--red); }
+  .txn-desc { flex: 1; }
+  .txn-name { font-size: 12px; font-weight: 500; color: var(--text); }
+  .txn-date { font-size: 10px; color: var(--text-dim); }
+  .txn-amount { font-size: 13px; font-weight: 600; }
+  .txn-amount.in { color: var(--green-light); }
+  .txn-amount.out { color: var(--red); }
+
+  /* GOLD TRACKER */
+  .gold-display {
+    background: linear-gradient(135deg, #1a0f00, #0d0800);
+    border: 1px solid rgba(255,215,0,0.4);
+    border-radius: 20px;
+    padding: 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .gold-display::before {
+    content: '⚜️';
+    position: absolute;
+    top: -10px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 80px;
+    opacity: 0.05;
+  }
+
+  .gold-oz { font-family: 'Cinzel', serif; font-size: 48px; font-weight: 900; color: var(--gold); text-shadow: 0 0 30px rgba(255,215,0,0.5); }
+  .gold-oz-label { font-size: 12px; color: var(--text-dim); letter-spacing: 2px; margin-bottom: 16px; }
+  .gold-usd { font-size: 22px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .gold-price { font-size: 11px; color: var(--text-dim); }
+
+  /* EDUCATION */
+  .program-card {
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    transition: all 0.2s;
+  }
+
+  .program-card:hover { border-color: rgba(255,215,0,0.3); transform: translateY(-2px); }
+  .prog-icon { font-size: 24px; margin-bottom: 12px; }
+  .prog-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; line-height: 1.3; }
+  .prog-meta { font-size: 11px; color: var(--text-dim); margin-bottom: 12px; }
+  .prog-capacity { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-dim); margin-bottom: 6px; }
+  .prog-bar { height: 4px; background: var(--dark1); border-radius: 2px; overflow: hidden; }
+  .prog-bar-fill { height: 4px; background: linear-gradient(90deg, var(--green), var(--gold)); border-radius: 2px; }
+
+  /* ALERTS */
+  .alert-list { display: flex; flex-direction: column; gap: 10px; }
+  .alert-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: var(--dark3); border-radius: 12px; padding: 14px 16px;
+    border-left: 3px solid var(--gold);
+  }
+  .alert-item.critical { border-left-color: var(--red); }
+  .alert-item.info { border-left-color: #4A90D9; }
+  .alert-item.success { border-left-color: var(--green); }
+  .alert-icon { font-size: 16px; margin-top: 1px; }
+  .alert-title { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .alert-desc { font-size: 11px; color: var(--text-dim); }
+
+  /* VISA TABLE */
+  .visa-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+  .visa-stat { background: var(--dark3); border-radius: 12px; padding: 16px; text-align: center; border: 1px solid var(--border); }
+  .visa-stat-val { font-family: 'Cinzel', serif; font-size: 28px; font-weight: 700; color: var(--gold); }
+  .visa-stat-label { font-size: 10px; color: var(--text-dim); margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* MARKETING */
+  .campaign-card {
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+  }
+  .campaign-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .campaign-meta { font-size: 11px; color: var(--text-dim); margin-bottom: 14px; }
+  .campaign-metrics { display: flex; gap: 16px; }
+  .camp-metric { text-align: center; }
+  .camp-metric-val { font-size: 18px; font-weight: 700; color: var(--gold); }
+  .camp-metric-label { font-size: 9px; color: var(--text-dim); text-transform: uppercase; }
+
+  /* FLOATING ACTION */
+  .fab {
+    position: fixed;
+    bottom: 32px; right: 32px;
+    width: 56px; height: 56px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow: 0 4px 24px rgba(255,215,0,0.4);
+    transition: all 0.2s;
+    z-index: 200;
+    color: var(--black);
+    border: none;
+  }
+
+  .fab:hover { transform: scale(1.1); box-shadow: 0 8px 32px rgba(255,215,0,0.6); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--dark1); }
+  ::-webkit-scrollbar-thumb { background: rgba(255,215,0,0.2); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255,215,0,0.4); }
+
+  /* CHART CONTAINER */
+  .chart-wrap { position: relative; height: 220px; }
+  .chart-wrap-sm { position: relative; height: 180px; }
+
+  /* TAG */
+  .tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 500;
+    margin: 2px;
+  }
+
+  .tag.gold { background: rgba(255,215,0,0.1); color: var(--gold); border: 1px solid rgba(255,215,0,0.2); }
+  .tag.green { background: rgba(0,166,81,0.1); color: var(--green-light); border: 1px solid rgba(0,166,81,0.2); }
+  .tag.blue { background: rgba(74,144,217,0.1); color: #4A90D9; border: 1px solid rgba(74,144,217,0.2); }
+
+  /* LOAN ROW */
+  .loan-row { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .loan-row:last-child { border-bottom: none; }
+  .loan-type { font-size: 12px; font-weight: 600; color: var(--text); }
+  .loan-meta { font-size: 10px; color: var(--text-dim); }
+  .loan-rate { font-size: 11px; color: var(--gold); font-weight: 600; }
+  .loan-status { padding: 3px 10px; border-radius: 20px; font-size: 10px; }
+  .loan-status.pending { background: rgba(255,215,0,0.1); color: var(--gold); }
+  .loan-status.approved { background: rgba(0,255,127,0.1); color: var(--green-light); }
+
+  /* RESPONSIVE */
+  @media (max-width: 1200px) {
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .company-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .page.active > * { animation: fadeInUp 0.4s ease forwards; }
+
+  /* IMPACT COUNTER */
+  .impact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .impact-card {
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    text-align: center;
+  }
+  .impact-icon { font-size: 32px; margin-bottom: 12px; }
+  .impact-val { font-family: 'Cinzel', serif; font-size: 32px; font-weight: 700; color: var(--gold); }
+  .impact-label { font-size: 11px; color: var(--text-dim); margin-top: 6px; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* PARTNER SECTION */
+  .partner-card {
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.2s;
+  }
+  .partner-card:hover { border-color: rgba(255,215,0,0.3); }
+  .partner-icon { font-size: 28px; width: 52px; height: 52px; background: rgba(255,215,0,0.06); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .partner-info { flex: 1; }
+  .partner-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .partner-type { font-size: 11px; color: var(--text-dim); margin-bottom: 8px; }
+  .partner-value { font-size: 14px; font-weight: 700; color: var(--gold); }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo-area">
+    <span class="crown-icon">👑</span>
+    <div class="logo-title">3 KINGS ENTERPRISE<br>HOLDINGS</div>
+    <div class="logo-sub">United States of Africa</div>
+  </div>
+
+  <nav class="nav-section">
+    <div class="nav-label">Executive</div>
+    <div class="nav-item active" onclick="showPage('dashboard')"><i class="fas fa-th-large"></i> Command Center</div>
+    <div class="nav-item" onclick="showPage('companies')"><i class="fas fa-building"></i> Companies <span class="nav-badge">8</span></div>
+    <div class="nav-item" onclick="showPage('projects')"><i class="fas fa-hard-hat"></i> Projects <span class="nav-badge">8</span></div>
+    <div class="nav-item" onclick="showPage('employees')"><i class="fas fa-users"></i> Team <span class="nav-badge">8</span></div>
+  </nav>
+
+  <nav class="nav-section">
+    <div class="nav-label">Finance</div>
+    <div class="nav-item" onclick="showPage('banking')"><i class="fas fa-university"></i> Banking</div>
+    <div class="nav-item" onclick="showPage('gold')"><i class="fas fa-coins"></i> Gold Reserves</div>
+    <div class="nav-item" onclick="showPage('loans')"><i class="fas fa-hand-holding-usd"></i> Loans</div>
+    <div class="nav-item" onclick="showPage('payroll')"><i class="fas fa-money-check-alt"></i> Payroll</div>
+  </nav>
+
+  <nav class="nav-section">
+    <div class="nav-label">Operations</div>
+    <div class="nav-item" onclick="showPage('education')"><i class="fas fa-graduation-cap"></i> University</div>
+    <div class="nav-item" onclick="showPage('housing')"><i class="fas fa-home"></i> Housing</div>
+    <div class="nav-item" onclick="showPage('health')"><i class="fas fa-heartbeat"></i> Health</div>
+    <div class="nav-item" onclick="showPage('visa')"><i class="fas fa-passport"></i> Visa & Immigration</div>
+  </nav>
+
+  <nav class="nav-section">
+    <div class="nav-label">Growth</div>
+    <div class="nav-item" onclick="showPage('marketing')"><i class="fas fa-bullhorn"></i> Marketing</div>
+    <div class="nav-item" onclick="showPage('crm')"><i class="fas fa-handshake"></i> Partners & CRM</div>
+    <div class="nav-item" onclick="showPage('compliance')"><i class="fas fa-shield-alt"></i> Compliance</div>
+    <div class="nav-item" onclick="showPage('impact')"><i class="fas fa-globe-africa"></i> Community Impact</div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="ceo-card">
+      <div class="ceo-avatar">FD</div>
+      <div class="ceo-info">
+        <div class="ceo-name">Frederick D. Dixon</div>
+        <div class="ceo-title">👑 FOUNDER & CEO</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1 id="pageTitle">Executive Command Center</h1>
+      <p id="pageDate"></p>
+    </div>
+    <div class="topbar-right">
+      <div class="live-badge"><div class="live-dot"></div> LIVE SYSTEM</div>
+      <button class="topbar-btn"><i class="fas fa-bell"></i> Alerts <span style="background:var(--gold);color:var(--black);padding:1px 6px;border-radius:10px;font-size:9px;margin-left:4px;">5</span></button>
+      <button class="topbar-btn"><i class="fas fa-download"></i> Export</button>
+    </div>
+  </div>
+
+  <!-- ========== DASHBOARD PAGE ========== -->
+  <div class="page active" id="page-dashboard">
+    <div class="section-title">Executive Command Center</div>
+    <div class="section-sub">Real-time overview of the entire 3 Kings Enterprise ecosystem</div>
+
+    <!-- KPI STATS -->
+    <div class="stats-row">
+      <div class="stat-card gold">
+        <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+        <div class="stat-value">$1.55B</div>
+        <div class="stat-label">Total Portfolio Value</div>
+        <div class="stat-change up"><i class="fas fa-arrow-up"></i> +$200M pipeline</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-icon"><i class="fas fa-building"></i></div>
+        <div class="stat-value">8</div>
+        <div class="stat-label">Active Companies</div>
+        <div class="stat-change up"><i class="fas fa-arrow-up"></i> 3 actively operating</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-icon"><i class="fas fa-users"></i></div>
+        <div class="stat-value">10,470</div>
+        <div class="stat-label">Jobs Being Created</div>
+        <div class="stat-change up"><i class="fas fa-arrow-up"></i> Across all projects</div>
+      </div>
+      <div class="stat-card purple">
+        <div class="stat-icon"><i class="fas fa-graduation-cap"></i></div>
+        <div class="stat-value">1,300</div>
+        <div class="stat-label">Student Capacity</div>
+        <div class="stat-change up"><i class="fas fa-arrow-up"></i> 6 programs launching</div>
+      </div>
+    </div>
+
+    <!-- CHARTS ROW -->
+    <div class="grid-7-3">
+      <div class="panel">
+        <div class="panel-title"><i class="fas fa-chart-line"></i> Portfolio Budget Breakdown</div>
+        <div class="panel-sub">Estimated investment across all active projects</div>
+        <div class="chart-wrap">
+          <canvas id="budgetChart"></canvas>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title"><i class="fas fa-chart-pie"></i> Company Mix</div>
+        <div class="panel-sub">By industry sector</div>
+        <div class="chart-wrap">
+          <canvas id="sectorChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECT PROGRESS + ALERTS -->
+    <div class="grid-7-3">
+      <div class="panel">
+        <div class="panel-title"><i class="fas fa-tasks"></i> Project Progress Tracker</div>
+        <div class="panel-sub">All 8 major projects — live status</div>
+        <div class="project-list">
+          <div class="project-row">
+            <div class="project-icon">🏙️</div>
+            <div class="project-info">
+              <div class="project-name">UAS Smart City — Phase 1</div>
+              <div class="project-meta">West Africa · Planning · Target: Dec 2027</div>
+            </div>
+            <div class="project-progress">
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:8%"></div></div>
+              <div class="progress-label">8%</div>
+            </div>
+            <div class="project-budget">
+              <div class="budget-val">$850M</div>
+              <div class="budget-label">Estimated</div>
+            </div>
+          </div>
+          <div class="project-row">
+            <div class="project-icon">🏛️</div>
+            <div class="project-info">
+              <div class="project-name">UAS University — Campus Build</div>
+              <div class="project-meta">United African States · Planning · Target: May 2028</div>
+            </div>
+            <div class="project-progress">
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:5%"></div></div>
+              <div class="progress-label">5%</div>
+            </div>
+            <div class="project-budget">
+              <div class="budget-val">$180M</div>
+              <div class="budget-label">Estimated</div>
+            </div>
+          </div>
+          <div class="project-row">
+            <div class="project-icon">🏨</div>
+            <div class="project-info">
+              <div class="project-name">3 Kings Luxury Resort — Phase 1</div>
+              <div class="project-meta">United African States · Planning · Target: Jun 2029</div>
+            </div>
+            <div class="project-progress">
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:3%"></div></div>
+              <div class="progress-label">3%</div>
+            </div>
+            <div class="project-budget">
+              <div class="budget-val">$120M</div>
+              <div class="budget-label">Estimated</div>
+            </div>
+          </div>
+          <div class="project-row">
+            <div class="project-icon">☕</div>
+            <div class="project-info">
+              <div class="project-name">Hebrew Black Coffee — US Expansion</div>
+              <div class="project-meta">10 US Cities · Funding · Target: Dec 2026</div>
+            </div>
+            <div class="project-progress">
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:18%"></div></div>
+              <div class="progress-label">18%</div>
+            </div>
+            <div class="project-budget">
+              <div class="budget-val">$4.5M</div>
+              <div class="budget-label">Estimated</div>
+            </div>
+          </div>
+          <div class="project-row">
+            <div class="project-icon">🏥</div>
+            <div class="project-info">
+              <div class="project-name">UAS Teaching Hospital</div>
+              <div class="project-meta">United African States · Planning · Target: Dec 2029</div>
+            </div>
+            <div class="project-progress">
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:2%"></div></div>
+              <div class="progress-label">2%</div>
+            </div>
+            <div class="project-budget">
+              <div class="budget-val">$120M</div>
+              <div class="budget-label">Estimated</div>
+            </div>
+          </div>
+          <div class="project-row">
+            <div class="project-icon">🌾</div>
+            <div class="project-info">
+              <div class="project-name">UAS Agricultural Zone</div>
+              <div class="project-meta">United African States · Planning · Target: Jun 2028</div>
+            </div>
+            <div class="project-progress">
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:4%"></div></div>
+              <div class="progress-label">4%</div>
+            </div>
+            <div class="project-budget">
+              <div class="budget-val">$35M</div>
+              <div class="budget-label">Estimated</div>
+            </div>
+          </div>
+          <div class="project-row">
+            <div class="project-icon">🏠</div>
+            <div class="project-info">
+              <div class="project-name">Thorpe Construction — UAS Housing</div>
+              <div class="project-meta">United African States · Planning · Target: Sep 2028</div>
+            </div>
+            <div class="project-progress">
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:1%"></div></div>
+              <div class="progress-label">1%</div>
+            </div>
+            <div class="project-budget">
+              <div class="budget-val">$200M</div>
+              <div class="budget-label">Estimated</div>
+            </div>
+          </div>
+          <div class="project-row">
+            <div class="project-icon">⚜️</div>
+            <div class="project-info">
+              <div class="project-name">UAS Gold Refinery — Facility</div>
+              <div class="project-meta">West Africa · Planning · Target: Mar 2027</div>
+            </div>
+            <div class="project-progress">
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:6%"></div></div>
+              <div class="progress-label">6%</div>
+            </div>
+            <div class="project-budget">
+              <div class="budget-val">$45M</div>
+              <div class="budget-label">Estimated</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <div class="panel">
+          <div class="panel-title"><i class="fas fa-bell"></i> Executive Alerts</div>
+          <div class="panel-sub">Action required</div>
+          <div class="alert-list">
+            <div class="alert-item critical">
+              <div class="alert-icon">🔴</div>
+              <div>
+                <div class="alert-title">Funding Gap — Coffee Expansion</div>
+                <div class="alert-desc">$4M still needed for 10-city rollout</div>
+              </div>
+            </div>
+            <div class="alert-item">
+              <div class="alert-icon">🟡</div>
+              <div>
+                <div class="alert-title">Smart City Permits Pending</div>
+                <div class="alert-desc">Phase 1 groundbreaking delayed</div>
+              </div>
+            </div>
+            <div class="alert-item info">
+              <div class="alert-icon">🔵</div>
+              <div>
+                <div class="alert-title">6 Programs Ready to Enroll</div>
+                <div class="alert-desc">University enrollment open</div>
+              </div>
+            </div>
+            <div class="alert-item success">
+              <div class="alert-icon">🟢</div>
+              <div>
+                <div class="alert-title">Y.E.S.S. Program Active</div>
+                <div class="alert-desc">Youth leadership track running</div>
+              </div>
+            </div>
+            <div class="alert-item">
+              <div class="alert-icon">🟡</div>
+              <div>
+                <div class="alert-title">Gold Refinery Site Selection</div>
+                <div class="alert-desc">West Africa site evaluation needed</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== COMPANIES PAGE ========== -->
+  <div class="page" id="page-companies">
+    <div class="section-title">Company Portfolio</div>
+    <div class="section-sub">All 8 subsidiaries under 3 Kings Enterprise Holdings</div>
+    <div class="company-grid">
+      <div class="company-card active-co">
+        <div class="co-icon">👑</div>
+        <div class="co-name">3 Kings Enterprise Holdings</div>
+        <div class="co-type">Parent Holding Company</div>
+        <div class="co-status active"><i class="fas fa-circle" style="font-size:6px"></i> Active</div>
+        <p style="font-size:11px;color:var(--text-dim);margin-top:12px;line-height:1.6;">Profit is not the end goal — liberation is.</p>
+      </div>
+      <div class="company-card active-co">
+        <div class="co-icon">🏗️</div>
+        <div class="co-name">Thorpe Construction Group</div>
+        <div class="co-type">Development</div>
+        <div class="co-status active"><i class="fas fa-circle" style="font-size:6px"></i> Active</div>
+        <p style="font-size:11px;color:var(--text-dim);margin-top:12px;line-height:1.6;">Build with excellence, hire from the community.</p>
+      </div>
+      <div class="company-card active-co">
+        <div class="co-icon">☕</div>
+        <div class="co-name">Hebrew Black Coffee</div>
+        <div class="co-type">Hospitality</div>
+        <div class="co-status active"><i class="fas fa-circle" style="font-size:6px"></i> Active</div>
+        <p style="font-size:11px;color:var(--text-dim);margin-top:12px;line-height:1.6;">Every cup tells a story of African heritage.</p>
+      </div>
+      <div class="company-card development-co">
+        <div class="co-icon">🏨</div>
+        <div class="co-name">3 Kings Hospitality & Resorts</div>
+        <div class="co-type">Hospitality</div>
+        <div class="co-status development"><i class="fas fa-circle" style="font-size:6px"></i> In Development</div>
+        <p style="font-size:11px;color:var(--text-dim);margin-top:12px;line-height:1.6;">Showcase the beauty and majesty of Africa.</p>
+      </div>
+      <div class="company-card planning-co">
+        <div class="co-icon">🌾</div>
+        <div class="co-name">UAS Agricultural Cooperative</div>
+        <div class="co-type">Agriculture</div>
+        <div class="co-status planning"><i class="fas fa-circle" style="font-size:6px"></i> Planning</div>
+        <p style="font-size:11px;color:var(--text-dim);margin-top:12px;line-height:1.6;">Feeding the continent, training its farmers.</p>
+      </div>
+      <div class="company-card planning-co">
+        <div class="co-icon">🏛️</div>
+        <div class="co-name">3 Kings Financial Services</div>
+        <div class="co-type">Financial Services</div>
+        <div class="co-status planning"><i class="fas fa-circle" style="font-size:6px"></i> Planning</div>
+        <p style="font-size:11px;color:var(--text-dim);margin-top:12px;line-height:1.6;">Banking, lending, and financial literacy for all.</p>
+      </div>
+      <div class="company-card planning-co">
+        <div class="co-icon">⚜️</div>
+        <div class="co-name">UAS Gold Refinery & Minerals</div>
+        <div class="co-type">Resources</div>
+        <div class="co-status planning"><i class="fas fa-circle" style="font-size:6px"></i> Planning</div>
+        <p style="font-size:11px;color:var(--text-dim);margin-top:12px;line-height:1.6;">Africa's wealth — refined and sovereign.</p>
+      </div>
+      <div class="company-card development-co">
+        <div class="co-icon">🎓</div>
+        <div class="co-name">United of Africa States University</div>
+        <div class="co-type">Education</div>
+        <div class="co-status development"><i class="fas fa-circle" style="font-size:6px"></i> In Development</div>
+        <p style="font-size:11px;color:var(--text-dim);margin-top:12px;line-height:1.6;">World-class education on African soil.</p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title"><i class="fas fa-chart-bar"></i> Company Performance Overview</div>
+      <div class="panel-sub">Status and investment across all subsidiaries</div>
+      <div class="chart-wrap">
+        <canvas id="companyChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== PROJECTS PAGE ========== -->
+  <div class="page" id="page-projects">
+    <div class="section-title">Project Portfolio</div>
+    <div class="section-sub">$1.554B+ in active development across Africa and the United States</div>
+    <div class="stats-row">
+      <div class="stat-card gold"><div class="stat-icon"><i class="fas fa-hard-hat"></i></div><div class="stat-value">8</div><div class="stat-label">Total Projects</div></div>
+      <div class="stat-card green"><div class="stat-icon"><i class="fas fa-dollar-sign"></i></div><div class="stat-value">$1.55B</div><div class="stat-label">Total Est. Budget</div></div>
+      <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-briefcase"></i></div><div class="stat-value">10,470</div><div class="stat-label">Jobs Created</div></div>
+      <div class="stat-card purple"><div class="stat-icon"><i class="fas fa-map-marker-alt"></i></div><div class="stat-value">2</div><div class="stat-label">Countries</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title"><i class="fas fa-tasks"></i> All Projects — Detailed View</div>
+      <div class="panel-sub">Sorted by budget — all milestones tracked</div>
+      <div class="project-list">
+        <div class="project-row">
+          <div class="project-icon">🏙️</div>
+          <div class="project-info">
+            <div class="project-name">UAS Smart City — Phase 1 Infrastructure</div>
+            <div class="project-meta">West Africa, United African States · Start: Jun 2025 · 5,000 jobs</div>
+            <div style="margin-top:6px;"><span class="tag gold">Planning</span><span class="tag blue">Housing</span><span class="tag green">Infrastructure</span></div>
+          </div>
+          <div class="project-progress" style="width:160px">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:8%"></div></div>
+            <div class="progress-label">8% Complete</div>
+          </div>
+          <div class="project-budget"><div class="budget-val">$850M</div><div class="budget-label">Est. Budget</div></div>
+        </div>
+        <div class="project-row">
+          <div class="project-icon">🏠</div>
+          <div class="project-info">
+            <div class="project-name">Thorpe Construction — UAS Housing Phase 1</div>
+            <div class="project-meta">United African States · Start: Mar 2026 · 2,000 jobs · 500 eco-units</div>
+            <div style="margin-top:6px;"><span class="tag gold">Planning</span><span class="tag blue">Residential</span></div>
+          </div>
+          <div class="project-progress" style="width:160px">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:1%"></div></div>
+            <div class="progress-label">1% Complete</div>
+          </div>
+          <div class="project-budget"><div class="budget-val">$200M</div><div class="budget-label">Est. Budget</div></div>
+        </div>
+        <div class="project-row">
+          <div class="project-icon">🏛️</div>
+          <div class="project-info">
+            <div class="project-name">UAS University — Campus Build</div>
+            <div class="project-meta">United African States · Start: Sep 2025 · 1,200 jobs</div>
+            <div style="margin-top:6px;"><span class="tag gold">Planning</span><span class="tag blue">Education</span></div>
+          </div>
+          <div class="project-progress" style="width:160px">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:5%"></div></div>
+            <div class="progress-label">5% Complete</div>
+          </div>
+          <div class="project-budget"><div class="budget-val">$180M</div><div class="budget-label">Est. Budget</div></div>
+        </div>
+        <div class="project-row">
+          <div class="project-icon">🏥</div>
+          <div class="project-info">
+            <div class="project-name">UAS Teaching Hospital & Medical Center</div>
+            <div class="project-meta">United African States · Start: Jun 2026 · 600 jobs · 200-bed facility</div>
+            <div style="margin-top:6px;"><span class="tag gold">Planning</span><span class="tag blue">Medical</span></div>
+          </div>
+          <div class="project-progress" style="width:160px">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:2%"></div></div>
+            <div class="progress-label">2% Complete</div>
+          </div>
+          <div class="project-budget"><div class="budget-val">$120M</div><div class="budget-label">Est. Budget</div></div>
+        </div>
+        <div class="project-row">
+          <div class="project-icon">🏨</div>
+          <div class="project-info">
+            <div class="project-name">3 Kings Luxury Resort — Phase 1</div>
+            <div class="project-meta">United African States · Start: Jan 2026 · 800 jobs · 5-star</div>
+            <div style="margin-top:6px;"><span class="tag gold">Planning</span><span class="tag blue">Hospitality</span></div>
+          </div>
+          <div class="project-progress" style="width:160px">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:3%"></div></div>
+            <div class="progress-label">3% Complete</div>
+          </div>
+          <div class="project-budget"><div class="budget-val">$120M</div><div class="budget-label">Est. Budget</div></div>
+        </div>
+        <div class="project-row">
+          <div class="project-icon">⚜️</div>
+          <div class="project-info">
+            <div class="project-name">UAS Gold Refinery — Facility Construction</div>
+            <div class="project-meta">West Africa · Start: Sep 2025 · 400 jobs</div>
+            <div style="margin-top:6px;"><span class="tag gold">Planning</span><span class="tag green">Gold</span></div>
+          </div>
+          <div class="project-progress" style="width:160px">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:6%"></div></div>
+            <div class="progress-label">6% Complete</div>
+          </div>
+          <div class="project-budget"><div class="budget-val">$45M</div><div class="budget-label">Est. Budget</div></div>
+        </div>
+        <div class="project-row">
+          <div class="project-icon">🌾</div>
+          <div class="project-info">
+            <div class="project-name">UAS Agricultural Zone — Vertical Farms</div>
+            <div class="project-meta">United African States · Start: Jan 2026 · 350 jobs · Feeds 10,000/day</div>
+            <div style="margin-top:6px;"><span class="tag gold">Planning</span><span class="tag green">Agriculture</span></div>
+          </div>
+          <div class="project-progress" style="width:160px">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:4%"></div></div>
+            <div class="progress-label">4% Complete</div>
+          </div>
+          <div class="project-budget"><div class="budget-val">$35M</div><div class="budget-label">Est. Budget</div></div>
+        </div>
+        <div class="project-row">
+          <div class="project-icon">☕</div>
+          <div class="project-info">
+            <div class="project-name">Hebrew Black Coffee — National Expansion</div>
+            <div class="project-meta">10 US Cities · Start: Mar 2025 · 120 jobs · MOST ADVANCED</div>
+            <div style="margin-top:6px;"><span class="tag green">Funding</span><span class="tag blue">Hospitality</span></div>
+          </div>
+          <div class="project-progress" style="width:160px">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:18%"></div></div>
+            <div class="progress-label">18% Complete</div>
+          </div>
+          <div class="project-budget"><div class="budget-val">$4.5M</div><div class="budget-label">Est. Budget</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== EMPLOYEES PAGE ========== -->
+  <div class="page" id="page-employees">
+    <div class="section-title">Executive Team</div>
+    <div class="section-sub">The kingdom's most valuable asset — the people behind the vision</div>
+    <div class="stats-row">
+      <div class="stat-card gold"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-value">8</div><div class="stat-label">Core Team Members</div></div>
+      <div class="stat-card green"><div class="stat-icon"><i class="fas fa-star"></i></div><div class="stat-value">50</div><div class="stat-label">Highest Level (CEO)</div></div>
+      <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-trophy"></i></div><div class="stat-value">22</div><div class="stat-label">Total Badges Earned</div></div>
+      <div class="stat-card purple"><div class="stat-icon"><i class="fas fa-bolt"></i></div><div class="stat-value">23,500</div><div class="stat-label">Total XP Points</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title"><i class="fas fa-id-card"></i> Team Roster</div>
+      <div class="panel-sub">All departments — skills and performance</div>
+      <table class="emp-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Position</th>
+            <th>Department</th>
+            <th>Level</th>
+            <th>Top Skill</th>
+            <th>Badges</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="emp-name-cell"><div class="emp-avatar">FD</div><div><div class="emp-name">Frederick D. Dixon Jr.</div><div class="emp-email">witchcraft1112@gmail.com</div></div></div></td>
+            <td style="color:var(--gold);font-weight:600;">Founder, CEO & Inventor</td>
+            <td>Executive Leadership</td>
+            <td><span class="level-badge">LVL 50</span></td>
+            <td>
+              <div class="skill-bar"><div class="skill-bg"><div class="skill-fill" style="width:100%"></div></div><span style="font-size:10px;color:var(--text-dim);white-space:nowrap;">Strategic Vision 100%</span></div>
+            </td>
+            <td>👑🔨🔭</td>
+            <td><span class="co-status active">Active</span></td>
+          </tr>
+          <tr>
+            <td><div class="emp-name-cell"><div class="emp-avatar">AO</div><div><div class="emp-name">Dr. Amina Osei</div><div class="emp-email">aosei@uas.global</div></div></div></td>
+            <td>Chief Operating Officer</td>
+            <td>Executive Leadership</td>
+            <td><span class="level-badge">LVL 32</span></td>
+            <td><div class="skill-bar"><div class="skill-bg"><div class="skill-fill" style="width:92%"></div></div><span style="font-size:10px;color:var(--text-dim);">Ops Mgmt 92%</span></div></td>
+            <td>🎖️💡</td>
+            <td><span class="co-status active">Active</span></td>
+          </tr>
+          <tr>
+            <td><div class="emp-name-cell"><div class="emp-avatar">JO</div><div><div class="emp-name">James Okafor</div><div class="emp-email">jokafor@uas.global</div></div></div></td>
+            <td>Chief Financial Officer</td>
+            <td>3 Kings Financial Services</td>
+            <td><span class="level-badge">LVL 29</span></td>
+            <td><div class="skill-bar"><div class="skill-bg"><div class="skill-fill" style="width:93%"></div></div><span style="font-size:10px;color:var(--text-dim);">Fin. Modeling 93%</span></div></td>
+            <td>🎖️📊</td>
+            <td><span class="co-status active">Active</span></td>
+          </tr>
+          <tr>
+            <td><div class="emp-name-cell"><div class="emp-avatar">EA</div><div><div class="emp-name">Dr. Emmanuel Asante</div><div class="emp-email">easante@uasu.edu</div></div></div></td>
+            <td>Dean of Medicine</td>
+            <td>UAS University</td>
+            <td><span class="level-badge">LVL 35</span></td>
+            <td><div class="skill-bar"><div class="skill-bg"><div class="skill-fill" style="width:95%"></div></div><span style="font-size:10px;color:var(--text-dim);">Med. Education 95%</span></div></td>
+            <td>📚🎖️</td>
+            <td><span class="co-status active">Active</span></td>
+          </tr>
+          <tr>
+            <td><div class="emp-name-cell"><div class="emp-avatar">MW</div><div><div class="emp-name">Marcus Wellington</div><div class="emp-email">mwellington@thorpe.com</div></div></div></td>
+            <td>VP of Construction Operations</td>
+            <td>Thorpe Construction Group</td>
+            <td><span class="level-badge">LVL 28</span></td>
+            <td><div class="skill-bar"><div class="skill-bg"><div class="skill-fill" style="width:90%"></div></div><span style="font-size:10px;color:var(--text-dim);">Project Mgmt 90%</span></div></td>
+            <td>🔨🎖️</td>
+            <td><span class="co-status active">Active</span></td>
+          </tr>
+          <tr>
+            <td><div class="emp-name-cell"><div class="emp-avatar">RM</div><div><div class="emp-name">Rashida Mensah</div><div class="emp-email">rmensah@hebrewblack.com</div></div></div></td>
+            <td>Brand & Operations Manager</td>
+            <td>Hebrew Black Coffee</td>
+            <td><span class="level-badge">LVL 21</span></td>
+            <td><div class="skill-bar"><div class="skill-bg"><div class="skill-fill" style="width:92%"></div></div><span style="font-size:10px;color:var(--text-dim);">Café Ops 92%</span></div></td>
+            <td>🔨</td>
+            <td><span class="co-status active">Active</span></td>
+          </tr>
+          <tr>
+            <td><div class="emp-name-cell"><div class="emp-avatar">FD</div><div><div class="emp-name">Fatou Diallo</div><div class="emp-email">fdiallo@uas.global</div></div></div></td>
+            <td>Director of Youth Programs</td>
+            <td>Y.E.S.S. Program</td>
+            <td><span class="level-badge">LVL 22</span></td>
+            <td><div class="skill-bar"><div class="skill-bg"><div class="skill-fill" style="width:91%"></div></div><span style="font-size:10px;color:var(--text-dim);">Social Services 91%</span></div></td>
+            <td>💚🎖️</td>
+            <td><span class="co-status active">Active</span></td>
+          </tr>
+          <tr>
+            <td><div class="emp-name-cell"><div class="emp-avatar">YA</div><div><div class="emp-name">Yemi Adeyemi</div><div class="emp-email">yadeyemi@uas.global</div></div></div></td>
+            <td>Head of Agricultural Research</td>
+            <td>UAS Agricultural Cooperative</td>
+            <td><span class="level-badge">LVL 18</span></td>
+            <td><div class="skill-bar"><div class="skill-bg"><div class="skill-fill" style="width:89%"></div></div><span style="font-size:10px;color:var(--text-dim);">Agronomy 89%</span></div></td>
+            <td>💡</td>
+            <td><span class="co-status active">Active</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ========== BANKING PAGE ========== -->
+  <div class="page" id="page-banking">
+    <div class="section-title">3 Kings Financial Services</div>
+    <div class="section-sub">Banking, transactions, and financial operations command</div>
+    <div class="grid-2">
+      <div class="bank-card">
+        <div class="bank-card-type">⚜️ 3 Kings Sovereign Account</div>
+        <div class="bank-card-balance">$0.00</div>
+        <div class="bank-card-label">Available Balance — Platform Account</div>
+        <div class="bank-card-details">
+          <div>
+            <div class="bank-card-holder">3 Kings Enterprise Holdings</div>
+            <div style="font-size:10px;color:var(--text-dim);margin-top:2px;">United African States / USA</div>
+          </div>
+          <div class="bank-card-logo">🏦</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title"><i class="fas fa-chart-area"></i> Financial Metrics</div>
+        <div class="panel-sub">Key performance indicators</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div style="background:var(--dark3);border-radius:12px;padding:16px;text-align:center;">
+            <div style="font-family:'Cinzel',serif;font-size:22px;color:var(--gold);">$1.55B</div>
+            <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">Total Portfolio</div>
+          </div>
+          <div style="background:var(--dark3);border-radius:12px;padding:16px;text-align:center;">
+            <div style="font-family:'Cinzel',serif;font-size:22px;color:var(--green-light);">$500K</div>
+            <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">Allocated Capital</div>
+          </div>
+          <div style="background:var(--dark3);border-radius:12px;padding:16px;text-align:center;">
+            <div style="font-family:'Cinzel',serif;font-size:22px;color:#4A90D9;">6</div>
+            <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">Service Types</div>
+          </div>
+          <div style="background:var(--dark3);border-radius:12px;padding:16px;text-align:center;">
+            <div style="font-family:'Cinzel',serif;font-size:22px;color:#C39BD3;">2</div>
+            <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">Territories</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title"><i class="fas fa-list"></i> Financial Services Offered</div>
+      <div class="panel-sub">3 Kings Financial Services — full product suite</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px;">
+        <div style="background:var(--dark3);border-radius:12px;padding:20px;text-align:center;border:1px solid var(--border);">
+          <div style="font-size:28px;margin-bottom:10px;">🏦</div>
+          <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;">Community Banking</div>
+          <div style="font-size:11px;color:var(--text-dim);">Savings, checking & business accounts for UAS citizens and diaspora</div>
+        </div>
+        <div style="background:var(--dark3);border-radius:12px;padding:20px;text-align:center;border:1px solid var(--border);">
+          <div style="font-size:28px;margin-bottom:10px;">💼</div>
+          <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;">Small Business Loans</div>
+          <div style="font-size:11px;color:var(--text-dim);">Low-interest loans for African entrepreneurs and community businesses</div>
+        </div>
+        <div style="background:var(--dark3);border-radius:12px;padding:20px;text-align:center;border:1px solid var(--border);">
+          <div style="font-size:28px;margin-bottom:10px;">📈</div>
+          <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;">Investment Products</div>
+          <div style="font-size:11px;color:var(--text-dim);">Bonds, equity, and sovereign investment vehicles</div>
+        </div>
+        <div style="background:var(--dark3);border-radius:12px;padding:20px;text-align:center;border:1px solid var(--border);">
+          <div style="font-size:28px;margin-bottom:10px;">📚</div>
+          <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;">Financial Literacy</div>
+          <div style="font-size:11px;color:var(--text-dim);">Free financial education programs for the community</div>
+        </div>
+        <div style="background:var(--dark3);border-radius:12px;padding:20px;text-align:center;border:1px solid var(--border);">
+          <div style="font-size:28px;margin-bottom:10px;">🌍</div>
+          <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;">Diaspora Remittance</div>
+          <div style="font-size:11px;color:var(--text-dim);">Low-cost international transfers between US and Africa</div>
+        </div>
+        <div style="background:var(--dark3);border-radius:12px;padding:20px;text-align:center;border:1px solid var(--border);">
+          <div style="font-size:28px;margin-bottom:10px;">💳</div>
+          <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;">3 Kings Cards</div>
+          <div style="font-size:11px;color:var(--text-dim);">Debit and credit cards for all platform members</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== GOLD PAGE ========== -->
+  <div class="page" id="page-gold">
+    <div class="section-title">Gold Reserves & Minerals</div>
+    <div class="section-sub">UAS Gold Refinery — sovereign wealth generation engine</div>
+    <div class="grid-2">
+      <div class="gold-display">
+        <div class="gold-oz-label">SOVEREIGN GOLD RESERVE</div>
+        <div class="gold-oz">0 oz</div>
+        <div style="height:1px;background:rgba(255,215,0,0.2);margin:16px 0;"></div>
+        <div class="gold-usd">$0 USD</div>
+        <div class="gold-price">At ~$2,050/oz market rate · Live tracking enabled</div>
+        <div style="margin-top:20px;">
+          <span class="tag gold">⚜️ West Africa Operations</span>
+          <span class="tag green">🌍 Export Ready</span>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title"><i class="fas fa-map-marker-alt"></i> Gold Locations</div>
+        <div class="panel-sub">Active and prospective mining regions</div>
+        <div class="alert-list">
+          <div class="alert-item">
+            <div class="alert-icon">⛏️</div>
+            <div>
+              <div class="alert-title">West Africa — Primary Zone</div>
+              <div class="alert-desc">Ghana, Mali, Guinea — High-volume gold belt regions</div>
+            </div>
+          </div>
+          <div class="alert-item info">
+            <div class="alert-icon">🔬</div>
+            <div>
+              <div class="alert-title">Assay Services</div>
+              <div class="alert-desc">On-site gold purity testing and certification</div>
+            </div>
+          </div>
+          <div class="alert-item success">
+            <div class="alert-icon">📦</div>
+            <div>
+              <div class="alert-title">Export Operations</div>
+              <div class="alert-desc">Direct international export — bypassing middlemen</div>
+            </div>
+          </div>
+          <div class="alert-item">
+            <div class="alert-icon">🏭</div>
+            <div>
+              <div class="alert-title">Refinery Facility</div>
+              <div class="alert-desc">$45M facility under construction — Target: Mar 2027</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:20px;">
+      <div class="panel-title"><i class="fas fa-chart-line"></i> Gold Price Tracker (Live Market)</div>
+      <div class="panel-sub">Historical gold price trend — XAU/USD</div>
+      <div class="chart-wrap">
+        <canvas id="goldChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== LOANS PAGE ========== -->
+  <div class="page" id="page-loans">
+    <div class="section-title">Loan Management</div>
+    <div class="section-sub">3 Kings Financial Services — lending portfolio</div>
+    <div class="stats-row">
+      <div class="stat-card gold"><div class="stat-icon"><i class="fas fa-hand-holding-usd"></i></div><div class="stat-value">0</div><div class="stat-label">Active Loans</div></div>
+      <div class="stat-card green"><div class="stat-icon"><i class="fas fa-check-circle"></i></div><div class="stat-value">0</div><div class="stat-label">Applications</div></div>
+      <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-percent"></i></div><div class="stat-value">4.5%</div><div class="stat-label">Base Interest Rate</div></div>
+      <div class="stat-card purple"><div class="stat-icon"><i class="fas fa-clock"></i></div><div class="stat-value">48hr</div><div class="stat-label">Avg. Approval Time</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title"><i class="fas fa-list-alt"></i> Loan Products Available</div>
+      <div class="panel-sub">Community-first lending designed to build generational wealth</div>
+      <div style="display:flex;flex-direction:column;gap:0;">
+        <div class="loan-row">
+          <div style="font-size:24px;width:44px;text-align:center;">🏠</div>
+          <div style="flex:1;"><div class="loan-type">Home Mortgage</div><div class="loan-meta">Up to 30 years · For UAS residents and diaspora</div></div>
+          <div class="loan-rate">From 3.5% APR</div>
+          <div><span class="loan-status approved">Available</span></div>
+        </div>
+        <div class="loan-row">
+          <div style="font-size:24px;width:44px;text-align:center;">💼</div>
+          <div style="flex:1;"><div class="loan-type">Small Business Loan</div><div class="loan-meta">Up to $500K · African entrepreneurs priority</div></div>
+          <div class="loan-rate">From 4.5% APR</div>
+          <div><span class="loan-status approved">Available</span></div>
+        </div>
+        <div class="loan-row">
+          <div style="font-size:24px;width:44px;text-align:center;">🎓</div>
+          <div style="flex:1;"><div class="loan-type">Student Education Loan</div><div class="loan-meta">UAS University students · Subsidized rates</div></div>
+          <div class="loan-rate">From 2.0% APR</div>
+          <div><span class="loan-status approved">Available</span></div>
+        </div>
+        <div class="loan-row">
+          <div style="font-size:24px;width:44px;text-align:center;">🏗️</div>
+          <div style="flex:1;"><div class="loan-type">Construction & Development</div><div class="loan-meta">Infrastructure projects · Large scale funding</div></div>
+          <div class="loan-rate">From 5.5% APR</div>
+          <div><span class="loan-status pending">Coming Soon</span></div>
+        </div>
+        <div class="loan-row">
+          <div style="font-size:24px;width:44px;text-align:center;">🌾</div>
+          <div style="flex:1;"><div class="loan-type">Agricultural Loan</div><div class="loan-meta">For farmers in UAS Agricultural Cooperative</div></div>
+          <div class="loan-rate">From 2.5% APR</div>
+          <div><span class="loan-status pending">Coming Soon</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== PAYROLL PAGE ========== -->
+  <div class="page" id="page-payroll">
+    <div class="section-title">Payroll Management</div>
+    <div class="section-sub">Automated payroll processing for all 3 Kings companies</div>
+    <div class="stats-row">
+      <div class="stat-card gold"><div class="stat-icon"><i class="fas fa-money-check-alt"></i></div><div class="stat-value">8</div><div class="stat-label">Employees on Payroll</div></div>
+      <div class="stat-card green"><div class="stat-icon"><i class="fas fa-calendar-check"></i></div><div class="stat-value">0</div><div class="stat-label">Payroll Runs</div></div>
+      <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-dollar-sign"></i></div><div class="stat-value">$0</div><div class="stat-label">Total Disbursed</div></div>
+      <div class="stat-card purple"><div class="stat-icon"><i class="fas fa-robot"></i></div><div class="stat-value">AUTO</div><div class="stat-label">Processing Mode</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title"><i class="fas fa-info-circle"></i> Payroll System Ready</div>
+      <div class="panel-sub">Automated monthly payroll configured and ready to activate</div>
+      <div class="alert-list">
+        <div class="alert-item success">
+          <div class="alert-icon">✅</div>
+          <div>
+            <div class="alert-title">Payroll automation configured</div>
+            <div class="alert-desc">Monthly runs scheduled — activate when ready</div>
+          </div>
+        </div>
+        <div class="alert-item info">
+          <div class="alert-icon">📋</div>
+          <div>
+            <div class="alert-title">8 employees ready</div>
+            <div class="alert-desc">All core team members enrolled in the system</div>
+          </div>
+        </div>
+        <div class="alert-item">
+          <div class="alert-icon">⚙️</div>
+          <div>
+            <div class="alert-title">Tax withholding modules loaded</div>
+            <div class="alert-desc">US and international tax configurations available</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== EDUCATION PAGE ========== -->
+  <div class="page" id="page-education">
+    <div class="section-title">United of Africa States University</div>
+    <div class="section-sub">World-class education on African soil — 6 programs, 1,300 student capacity</div>
+    <div class="stats-row">
+      <div class="stat-card gold"><div class="stat-icon"><i class="fas fa-graduation-cap"></i></div><div class="stat-value">6</div><div class="stat-label">Active Programs</div></div>
+      <div class="stat-card green"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-value">1,300</div><div class="stat-label">Total Capacity</div></div>
+      <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-certificate"></i></div><div class="stat-value">6</div><div class="stat-label">Certificates Offered</div></div>
+      <div class="stat-card purple"><div class="stat-icon"><i class="fas fa-briefcase"></i></div><div class="stat-value">100%</div><div class="stat-label">Include Internships</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px;">
+      <div class="program-card">
+        <div class="prog-icon">🩺</div>
+        <div class="prog-name">Doctor of Medicine (M.D.)</div>
+        <div class="prog-meta">48 months · Medical Dept · $8,000/yr</div>
+        <div class="prog-capacity"><span>Capacity: 200</span><span>Enrolled: 0</span></div>
+        <div class="prog-bar"><div class="prog-bar-fill" style="width:0%"></div></div>
+        <div style="margin-top:10px;"><span class="tag gold">Degree</span><span class="tag green">Internship</span></div>
+      </div>
+      <div class="program-card">
+        <div class="prog-icon">🌾</div>
+        <div class="prog-name">Bachelor of Agricultural Science</div>
+        <div class="prog-meta">48 months · Agriculture · $4,000/yr</div>
+        <div class="prog-capacity"><span>Capacity: 150</span><span>Enrolled: 0</span></div>
+        <div class="prog-bar"><div class="prog-bar-fill" style="width:0%"></div></div>
+        <div style="margin-top:10px;"><span class="tag gold">Degree</span><span class="tag green">Internship</span></div>
+      </div>
+      <div class="program-card">
+        <div class="prog-icon">💼</div>
+        <div class="prog-name">Bachelor of Business Administration</div>
+        <div class="prog-meta">48 months · Business · $5,000/yr</div>
+        <div class="prog-capacity"><span>Capacity: 250</span><span>Enrolled: 0</span></div>
+        <div class="prog-bar"><div class="prog-bar-fill" style="width:0%"></div></div>
+        <div style="margin-top:10px;"><span class="tag gold">Degree</span><span class="tag green">Internship</span></div>
+      </div>
+      <div class="program-card">
+        <div class="prog-icon">🔧</div>
+        <div class="prog-name">Construction Trades Certificate</div>
+        <div class="prog-meta">12 months · Construction · $1,500</div>
+        <div class="prog-capacity"><span>Capacity: 300</span><span>Enrolled: 0</span></div>
+        <div class="prog-bar"><div class="prog-bar-fill" style="width:0%"></div></div>
+        <div style="margin-top:10px;"><span class="tag blue">Certificate</span><span class="tag green">Internship</span></div>
+      </div>
+      <div class="program-card">
+        <div class="prog-icon">🧠</div>
+        <div class="prog-name">Mental Health Counseling Cert.</div>
+        <div class="prog-meta">18 months · Health · $2,500</div>
+        <div class="prog-capacity"><span>Capacity: 100</span><span>Enrolled: 0</span></div>
+        <div class="prog-bar"><div class="prog-bar-fill" style="width:0%"></div></div>
+        <div style="margin-top:10px;"><span class="tag blue">Certificate</span><span class="tag green">Internship</span></div>
+      </div>
+      <div class="program-card">
+        <div class="prog-icon">🌟</div>
+        <div class="prog-name">Y.E.S.S. Youth Leadership Track</div>
+        <div class="prog-meta">12 months · Youth · FREE</div>
+        <div class="prog-capacity"><span>Capacity: 500</span><span>Enrolled: 0</span></div>
+        <div class="prog-bar"><div class="prog-bar-fill" style="width:0%"></div></div>
+        <div style="margin-top:10px;"><span class="tag green">Active</span><span class="tag gold">FREE</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== HOUSING PAGE ========== -->
+  <div class="page" id="page-housing">
+    <div class="section-title">UAS Housing Program</div>
+    <div class="section-sub">500 eco-friendly residential units planned for Smart City Phase 1</div>
+    <div class="stats-row">
+      <div class="stat-card gold"><div class="stat-icon"><i class="fas fa-home"></i></div><div class="stat-value">500</div><div class="stat-label">Units Planned</div></div>
+      <div class="stat-card green"><div class="stat-icon"><i class="fas fa-leaf"></i></div><div class="stat-value">100%</div><div class="stat-label">Eco-Friendly Build</div></div>
+      <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-dollar-sign"></i></div><div class="stat-value">$200M</div><div class="stat-label">Construction Budget</div></div>
+      <div class="stat-card purple"><div class="stat-icon"><i class="fas fa-calendar"></i></div><div class="stat-value">2028</div><div class="stat-label">Completion Target</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-title"><i class="fas fa-building"></i> Unit Types</div>
+        <div class="panel-sub">All configurations for Smart City residents</div>
+        <div class="alert-list">
+          <div class="alert-item info"><div class="alert-icon">🏠</div><div><div class="alert-title">Studio Units</div><div class="alert-desc">Ideal for students and young professionals</div></div></div>
+          <div class="alert-item info"><div class="alert-icon">🛏️</div><div><div class="alert-title">1-Bedroom Units</div><div class="alert-desc">Perfect for singles and couples</div></div></div>
+          <div class="alert-item info"><div class="alert-icon">🏡</div><div><div class="alert-title">2-Bedroom Units</div><div class="alert-desc">For small families</div></div></div>
+          <div class="alert-item info"><div class="alert-icon">👨‍👩‍👧‍👦</div><div><div class="alert-title">Family Configurations</div><div class="alert-desc">Larger homes for growing families</div></div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title"><i class="fas fa-star"></i> Housing Amenities</div>
+        <div class="panel-sub">Smart City integrated features</div>
+        <div class="alert-list">
+          <div class="alert-item success"><div class="alert-icon">☀️</div><div><div class="alert-title">Solar Power Grid</div><div class="alert-desc">100% renewable energy for all units</div></div></div>
+          <div class="alert-item success"><div class="alert-icon">🌐</div><div><div class="alert-title">High-Speed Internet</div><div class="alert-desc">Fiber optic throughout the city</div></div></div>
+          <div class="alert-item success"><div class="alert-icon">🏊</div><div><div class="alert-title">Community Centers</div><div class="alert-desc">Pools, gyms, and gathering spaces</div></div></div>
+          <div class="alert-item success"><div class="alert-icon">🛡️</div><div><div class="alert-title">24/7 Security</div><div class="alert-desc">Smart security systems throughout</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== HEALTH PAGE ========== -->
+  <div class="page" id="page-health">
+    <div class="section-title">Health & Medical</div>
+    <div class="section-sub">UAS Teaching Hospital — 200-bed world-class medical facility</div>
+    <div class="stats-row">
+      <div class="stat-card gold"><div class="stat-icon"><i class="fas fa-hospital"></i></div><div class="stat-value">200</div><div class="stat-label">Bed Capacity</div></div>
+      <div class="stat-card green"><div class="stat-icon"><i class="fas fa-user-md"></i></div><div class="stat-value">600</div><div class="stat-label">Jobs Created</div></div>
+      <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-dollar-sign"></i></div><div class="stat-value">$120M</div><div class="stat-label">Construction Budget</div></div>
+      <div class="stat-card purple"><div class="stat-icon"><i class="fas fa-calendar"></i></div><div class="stat-value">2029</div><div class="stat-label">Completion Target</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-title"><i class="fas fa-heartbeat"></i> Medical Departments</div>
+        <div class="panel-sub">Full-service teaching hospital</div>
+        <div class="alert-list">
+          <div class="alert-item info"><div class="alert-icon">🩺</div><div><div class="alert-title">General Medicine</div><div class="alert-desc">Primary care for all UAS residents</div></div></div>
+          <div class="alert-item info"><div class="alert-icon">🔬</div><div><div class="alert-title">Biomedical Research</div><div class="alert-desc">African disease research and treatment</div></div></div>
+          <div class="alert-item info"><div class="alert-icon">🧠</div><div><div class="alert-title">Mental Health</div><div class="alert-desc">Trauma-informed community care</div></div></div>
+          <div class="alert-item info"><div class="alert-icon">🍼</div><div><div class="alert-title">Maternal Care</div><div class="alert-desc">Full OB/GYN and pediatric services</div></div></div>
+          <div class="alert-item info"><div class="alert-icon">⚕️</div><div><div class="alert-title">Surgery Center</div><div class="alert-desc">Advanced surgical suites</div></div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title"><i class="fas fa-flask"></i> Clinical Training</div>
+        <div class="panel-sub">Integrated with UAS University Medical Program</div>
+        <div class="alert-list">
+          <div class="alert-item success"><div class="alert-icon">🎓</div><div><div class="alert-title">M.D. Clinical Rotations</div><div class="alert-desc">200 medical students per cohort</div></div></div>
+          <div class="alert-item success"><div class="alert-icon">📋</div><div><div class="alert-title">Clinical Logging System</div><div class="alert-desc">Digital tracking of all procedures</div></div></div>
+          <div class="alert-item success"><div class="alert-icon">👨‍⚕️</div><div><div class="alert-title">Supervisor Sign-offs</div><div class="alert-desc">Credentialed physician oversight</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== VISA PAGE ========== -->
+  <div class="page" id="page-visa">
+    <div class="section-title">Visa & Immigration</div>
+    <div class="section-sub">UAS Visa processing — connecting the diaspora to the homeland</div>
+    <div class="visa-stats">
+      <div class="visa-stat"><div class="visa-stat-val">0</div><div class="visa-stat-label">Applications</div></div>
+      <div class="visa-stat"><div class="visa-stat-val">0</div><div class="visa-stat-label">Approved</div></div>
+      <div class="visa-stat"><div class="visa-stat-val">0</div><div class="visa-stat-label">Pending Review</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-title"><i class="fas fa-passport"></i> Visa Categories</div>
+        <div class="panel-sub">Available visa types for UAS entry</div>
+        <div class="alert-list">
+          <div class="alert-item info"><div class="alert-icon">🎓</div><div><div class="alert-title">Student Visa</div><div class="alert-desc">For UAS University enrollment — linked to programs</div></div></div>
+          <div class="alert-item info"><div class="alert-icon">💼</div><div><div class="alert-title">Business Visa</div><div class="alert-desc">For partners, investors, and entrepreneurs</div></div></div>
+          <div class="alert-item info"><div class="alert-icon">🏠</div><div><div class="alert-title">Residency Visa</div><div class="alert-desc">For Smart City residents and homeowners</div></div></div>
+          <div class="alert-item info"><div class="alert-icon">🌍</div><div><div class="alert-title">Diaspora Return Visa</div><div class="alert-desc">Expedited for African diaspora community</div></div></div>
+          <div class="alert-item info"><div class="alert-icon">🏥</div><div><div class="alert-title">Medical Visa</div><div class="alert-desc">For healthcare workers and patients</div></div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title"><i class="fas fa-globe-africa"></i> Countries Served</div>
+        <div class="panel-sub">Origin and destination nations</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;">
+          <span class="tag gold">🇺🇸 United States</span>
+          <span class="tag green">🇬🇭 Ghana</span>
+          <span class="tag green">🇳🇬 Nigeria</span>
+          <span class="tag green">🇰🇪 Kenya</span>
+          <span class="tag green">🇪🇹 Ethiopia</span>
+          <span class="tag green">🇸🇳 Senegal</span>
+          <span class="tag green">🇲🇱 Mali</span>
+          <span class="tag green">🇨🇲 Cameroon</span>
+          <span class="tag green">🇿🇦 South Africa</span>
+          <span class="tag blue">🇬🇧 United Kingdom</span>
+          <span class="tag blue">🇨🇦 Canada</span>
+          <span class="tag blue">🇫🇷 France</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== MARKETING PAGE ========== -->
+  <div class="page" id="page-marketing">
+    <div class="section-title">Marketing & Campaigns</div>
+    <div class="section-sub">Brand visibility, social media, and growth campaigns</div>
+    <div class="stats-row">
+      <div class="stat-card gold"><div class="stat-icon"><i class="fas fa-bullhorn"></i></div><div class="stat-value">0</div><div class="stat-label">Active Campaigns</div></div>
+      <div class="stat-card green"><div class="stat-icon"><i class="fas fa-share-alt"></i></div><div class="stat-value">5</div><div class="stat-label">Platforms Ready</div></div>
+      <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-eye"></i></div><div class="stat-value">0</div><div class="stat-label">Total Impressions</div></div>
+      <div class="stat-card purple"><div class="stat-icon"><i class="fas fa-mouse-pointer"></i></div><div class="stat-value">0</div><div class="stat-label">Total Clicks</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title"><i class="fas fa-share-alt"></i> Connected Platforms</div>
+      <div class="panel-sub">Multi-channel marketing infrastructure</div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:8px;">
+        <div style="background:var(--dark3);border-radius:12px;padding:20px;text-align:center;border:1px solid var(--border);">
+          <div style="font-size:28px;margin-bottom:8px;">📘</div>
+          <div style="font-size:12px;font-weight:600;color:var(--text);">Facebook</div>
+          <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">Ready to Connect</div>
+        </div>
+        <div style="background:var(--dark3);border-radius:12px;padding:20px;text-align:center;border:1px solid var(--border);">
+          <div style="font-size:28px;margin-bottom:8px;">📸</div>
+          <div style="font-size:12px;font-weight:600;color:var(--text);">Instagram</div>
+          <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">Ready to Connect</div>
+        </div>
+        <div style="background:var(--dark3);border-radius:12px;padding:20px;text-align:center;border:1px solid var(--border);">
+          <div style="font-size:28px;margin-bottom:8px;">🐦</div>
+          <div style="font-size:12px;font-weight:600;color:var(--text);">Twitter/X</div>
+          <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">Ready to Connect</div>
+        </div>
+        <div style="background:var(--dark3);border-radius:12px;padding:20px;text-align:center;border:1px solid var(--border);">
+          <div style="font-size:28px;margin-bottom:8px;">💼</div>
+          <div style="font-size:12px;font-weight:600;color:var(--text);">LinkedIn</div>
+          <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">Ready to Connect</div>
+        </div>
+        <div style="background:var(--dark3);border-radius:12px;padding:20px;text-align:center;border:1px solid var(--border);">
+          <div style="font-size:28px;margin-bottom:8px;">▶️</div>
+          <div style="font-size:12px;font-weight:600;color:var(--text);">YouTube</div>
+          <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">Ready to Connect</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== CRM PAGE ========== -->
+  <div class="page" id="page-crm">
+    <div class="section-title">Partners & CRM</div>
+    <div class="section-sub">Business partners, investors, and client relationships</div>
+    <div class="stats-row">
+      <div class="stat-card gold"><div class="stat-icon"><i class="fas fa-handshake"></i></div><div class="stat-value">0</div><div class="stat-label">Active Partners</div></div>
+      <div class="stat-card green"><div class="stat-icon"><i class="fas fa-user-tie"></i></div><div class="stat-value">0</div><div class="stat-label">Leads in Pipeline</div></div>
+      <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-chart-line"></i></div><div class="stat-value">$0</div><div class="stat-label">Pipeline Value</div></div>
+      <div class="stat-card purple"><div class="stat-icon"><i class="fas fa-globe"></i></div><div class="stat-value">Global</div><div class="stat-label">Reach</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title"><i class="fas fa-globe-africa"></i> Partnership Categories</div>
+      <div class="panel-sub">Strategic alliance framework for 3 Kings Enterprise</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px;">
+        <div class="partner-card">
+          <div class="partner-icon">🏛️</div>
+          <div class="partner-info">
+            <div class="partner-name">Government Partners</div>
+            <div class="partner-type">African Ministries & Agencies</div>
+            <div><span class="tag gold">Seeking</span></div>
+          </div>
+        </div>
+        <div class="partner-card">
+          <div class="partner-icon">💰</div>
+          <div class="partner-info">
+            <div class="partner-name">Investors & VCs</div>
+            <div class="partner-type">Impact Investors · Development Banks</div>
+            <div><span class="tag gold">Seeking</span></div>
+          </div>
+        </div>
+        <div class="partner-card">
+          <div class="partner-icon">🏥</div>
+          <div class="partner-info">
+            <div class="partner-name">Healthcare Partners</div>
+            <div class="partner-type">Medical Institutions · WHO · NGOs</div>
+            <div><span class="tag gold">Seeking</span></div>
+          </div>
+        </div>
+        <div class="partner-card">
+          <div class="partner-icon">🎓</div>
+          <div class="partner-info">
+            <div class="partner-name">Academic Partners</div>
+            <div class="partner-type">Global Universities · Research Orgs</div>
+            <div><span class="tag gold">Seeking</span></div>
+          </div>
+        </div>
+        <div class="partner-card">
+          <div class="partner-icon">🏗️</div>
+          <div class="partner-info">
+            <div class="partner-name">Construction Partners</div>
+            <div class="partner-type">Equipment · Materials · Engineering</div>
+            <div><span class="tag gold">Seeking</span></div>
+          </div>
+        </div>
+        <div class="partner-card">
+          <div class="partner-icon">🌍</div>
+          <div class="partner-info">
+            <div class="partner-name">Diaspora Organizations</div>
+            <div class="partner-type">African Diaspora Unions · Community Orgs</div>
+            <div><span class="tag green">Active</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== COMPLIANCE PAGE ========== -->
+  <div class="page" id="page-compliance">
+    <div class="section-title">Compliance & Audits</div>
+    <div class="section-sub">Regulatory compliance across all 3 Kings operations</div>
+    <div class="stats-row">
+      <div class="stat-card gold"><div class="stat-icon"><i class="fas fa-shield-alt"></i></div><div class="stat-value">0</div><div class="stat-label">Open Items</div></div>
+      <div class="stat-card green"><div class="stat-icon"><i class="fas fa-check-double"></i></div><div class="stat-value">0</div><div class="stat-label">Resolved</div></div>
+      <div class="stat-card blue"><div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div><div class="stat-value">0</div><div class="stat-label">High Risk</div></div>
+      <div class="stat-card purple"><div class="stat-icon"><i class="fas fa-calendar-alt"></i></div><div class="stat-value">0</div><div class="stat-label">Audits Scheduled</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title"><i class="fas fa-list-check"></i> Compliance Framework</div>
+      <div class="panel-sub">Regulatory areas covered across all subsidiaries</div>
+      <div class="alert-list">
+        <div class="alert-item success"><div class="alert-icon">🏦</div><div><div class="alert-title">Financial Compliance</div><div class="alert-desc">Banking regulations · AML · KYC · Tax compliance</div></div></div>
+        <div class="alert-item success"><div class="alert-icon">🏗️</div><div><div class="alert-title">Construction Permits</div><div class="alert-desc">Building codes · Environmental impact · Safety standards</div></div></div>
+        <div class="alert-item success"><div class="alert-icon">🎓</div><div><div class="alert-title">Educational Accreditation</div><div class="alert-desc">University accreditation · Program certification standards</div></div></div>
+        <div class="alert-item success"><div class="alert-icon">🏥</div><div><div class="alert-title">Healthcare Licensing</div><div class="alert-desc">Medical facility licensing · Clinical practice standards</div></div></div>
+        <div class="alert-item success"><div class="alert-icon">🌍</div><div><div class="alert-title">International Trade</div><div class="alert-desc">Gold export · Import regulations · Trade agreements</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== IMPACT PAGE ========== -->
+  <div class="page" id="page-impact">
+    <div class="section-title">Community Impact</div>
+    <div class="section-sub">The real mission — liberation, opportunity, and African sovereignty</div>
+    <div class="impact-grid" style="margin-bottom:20px;">
+      <div class="impact-card">
+        <div class="impact-icon">👷</div>
+        <div class="impact-val">10,470</div>
+        <div class="impact-label">Jobs Being Created</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-icon">🎓</div>
+        <div class="impact-val">1,300</div>
+        <div class="impact-label">Students Capacity</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-icon">🏠</div>
+        <div class="impact-val">500</div>
+        <div class="impact-label">Housing Units</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-icon">🍽️</div>
+        <div class="impact-val">10,000</div>
+        <div class="impact-label">People Fed Daily</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-icon">🏥</div>
+        <div class="impact-val">200</div>
+        <div class="impact-label">Hospital Beds</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-icon">🌍</div>
+        <div class="impact-val">54</div>
+        <div class="impact-label">African Nations Served</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title"><i class="fas fa-heart"></i> The Mission Statement</div>
+      <div class="panel-sub">The philosophy that drives every decision</div>
+      <div style="background:linear-gradient(135deg,rgba(255,215,0,0.05),rgba(0,166,81,0.05));border:1px solid rgba(255,215,0,0.2);border-radius:14px;padding:32px;text-align:center;">
+        <div style="font-size:36px;margin-bottom:16px;">👑 🌍 ✊</div>
+        <div style="font-family:'Cinzel',serif;font-size:18px;color:var(--gold);margin-bottom:16px;line-height:1.5;">"Black-owned, Black-operated, reinvesting profits back into the community, the university, and the city."</div>
+        <div style="font-size:14px;color:var(--text-dim);line-height:1.8;max-width:600px;margin:0 auto;">"Profit is not the end goal — <strong style="color:var(--gold)">liberation is.</strong>"</div>
+        <div style="margin-top:20px;">
+          <span class="tag gold">Pan-African Unity</span>
+          <span class="tag green">Sovereign Wealth</span>
+          <span class="tag blue">Education First</span>
+          <span class="tag gold">Black Excellence</span>
+          <span class="tag green">Community Liberation</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:20px;">
+      <div class="panel-title"><i class="fas fa-chart-bar"></i> Impact by Sector</div>
+      <div class="panel-sub">Projected community benefit across all divisions</div>
+      <div class="chart-wrap">
+        <canvas id="impactChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- FAB -->
+<button class="fab" title="Quick Actions">⚡</button>
+
+<script>
+  // Set date
+  document.getElementById('pageDate').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+  // Navigation
+  function showPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    event.currentTarget.classList.add('active');
+
+    const titles = {
+      dashboard: 'Executive Command Center',
+      companies: 'Company Portfolio',
+      projects: 'Project Portfolio',
+      employees: 'Executive Team',
+      banking: '3 Kings Financial Services',
+      gold: 'Gold Reserves & Minerals',
+      loans: 'Loan Management',
+      payroll: 'Payroll Management',
+      education: 'UAS University',
+      housing: 'UAS Housing Program',
+      health: 'Health & Medical',
+      visa: 'Visa & Immigration',
+      marketing: 'Marketing & Campaigns',
+      crm: 'Partners & CRM',
+      compliance: 'Compliance & Audits',
+      impact: 'Community Impact'
+    };
+    document.getElementById('pageTitle').textContent = titles[page] || page;
+  }
+
+  const GOLD = '#FFD700';
+  const GREEN = '#00FF7F';
+  const BLUE = '#4A90D9';
+  const PURPLE = '#C39BD3';
+  const RED = '#FF6B6B';
+  const DARK = '#1C2333';
+
+  Chart.defaults.color = '#8892A4';
+  Chart.defaults.borderColor = 'rgba(255,215,0,0.08)';
+
+  // Budget Chart
+  new Chart(document.getElementById('budgetChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Smart City', 'Housing', 'University', 'Hospital', 'Resort', 'Gold Refinery', 'Agriculture', 'Coffee'],
+      datasets: [{
+        label: 'Estimated Budget ($M)',
+        data: [850, 200, 180, 120, 120, 45, 35, 4.5],
+        backgroundColor: [
+          'rgba(255,215,0,0.7)', 'rgba(0,255,127,0.7)', 'rgba(74,144,217,0.7)',
+          'rgba(195,155,211,0.7)', 'rgba(255,107,107,0.7)', 'rgba(255,215,0,0.5)',
+          'rgba(0,255,127,0.5)', 'rgba(74,144,217,0.5)'
+        ],
+        borderColor: [GOLD, GREEN, BLUE, PURPLE, RED, GOLD, GREEN, BLUE],
+        borderWidth: 1,
+        borderRadius: 8,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: 'rgba(255,215,0,0.05)' } },
+        y: { grid: { color: 'rgba(255,215,0,0.05)' }, ticks: { callback: v => '$' + v + 'M' } }
+      }
+    }
+  });
+
+  // Sector Chart
+  new Chart(document.getElementById('sectorChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Development', 'Hospitality', 'Agriculture', 'Financial', 'Education'],
+      datasets: [{
+        data: [2, 2, 1, 2, 1],
+        backgroundColor: [GOLD, GREEN, BLUE, PURPLE, RED],
+        borderColor: '#0A0F1E', borderWidth: 3,
+        hoverOffset: 8
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { padding: 12, font: { size: 11 } } }
+      },
+      cutout: '65%'
+    }
+  });
+
+  // Company Chart
+  new Chart(document.getElementById('companyChart'), {
+    type: 'bar',
+    data: {
+      labels: ['3 Kings Holdings', 'Thorpe Construction', 'Hebrew Coffee', '3K Hospitality', 'UAS Agri', 'Financial Svc', 'Gold Refinery', 'UAS University'],
+      datasets: [
+        { label: 'Est. Budget ($M)', data: [0, 200, 4.5, 120, 35, 0, 45, 180], backgroundColor: 'rgba(255,215,0,0.7)', borderRadius: 6 },
+        { label: 'Jobs Created', data: [0, 2000, 120, 800, 350, 0, 400, 1200], backgroundColor: 'rgba(0,255,127,0.5)', borderRadius: 6 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { font: { size: 11 } } } },
+      scales: {
+        x: { grid: { color: 'rgba(255,215,0,0.05)' } },
+        y: { grid: { color: 'rgba(255,215,0,0.05)' } }
+      }
+    }
+  });
+
+  // Gold Price Chart
+  const goldPrices = [1820, 1850, 1900, 1870, 1950, 2000, 1980, 2020, 2050, 2100, 2080, 2150];
+  new Chart(document.getElementById('goldChart'), {
+    type: 'line',
+    data: {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+      datasets: [{
+        label: 'Gold Price (USD/oz)',
+        data: goldPrices,
+        borderColor: GOLD,
+        backgroundColor: 'rgba(255,215,0,0.06)',
+        borderWidth: 2,
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: GOLD,
+        pointRadius: 4
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: 'rgba(255,215,0,0.05)' } },
+        y: { grid: { color: 'rgba(255,215,0,0.05)' }, ticks: { callback: v => '$' + v } }
+      }
+    }
+  });
+
+  // Impact Chart
+  new Chart(document.getElementById('impactChart'), {
+    type: 'radar',
+    data: {
+      labels: ['Jobs Created', 'Education', 'Housing', 'Healthcare', 'Food Security', 'Financial Access'],
+      datasets: [{
+        label: 'Impact Score',
+        data: [88, 75, 60, 55, 70, 50],
+        backgroundColor: 'rgba(255,215,0,0.1)',
+        borderColor: GOLD,
+        borderWidth: 2,
+        pointBackgroundColor: GOLD,
+      }, {
+        label: 'Target',
+        data: [100, 100, 100, 100, 100, 100],
+        backgroundColor: 'rgba(0,255,127,0.05)',
+        borderColor: 'rgba(0,255,127,0.3)',
+        borderWidth: 1,
+        borderDash: [5, 5],
+        pointRadius: 0
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: {
+        r: {
+          grid: { color: 'rgba(255,215,0,0.08)' },
+          ticks: { display: false },
+          pointLabels: { color: '#8892A4', font: { size: 11 } }
+        }
+      },
+      plugins: { legend: { labels: { font: { size: 11 } } } }
+    }
+  });
+</script>
+</body>
+</html>
